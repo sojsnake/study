@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vue 게시판 목록</title>
+  </head>
+  <body>
+    <div id="app">
+      <h1>📌 게시판 목록</h1>
+      <!-- 여기에 게시글 목록을 표시하는 코드를 작성하세요 -->
+      <ul>
+        <li
+          class="post-item"
+          v-for="(post, key, index) in posts"
+          :key="key"
+          @click="selectPost(post)"
+        >
+          {{post.no}}. {{post.title}}
+        </li>
+      </ul>
+      <!-- 선택한 게시글의 내용을 표시하는 부분을 작성하세요 -->
+      <div class="post-content" v-if="selectedPost!=null">
+        <h2>{{selectedTitle}}</h2>
+        <p>{{selectedContent}}</p>
+        <button @click="closePost">닫기</button>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script>
+      const { createApp, ref } = Vue;
+
+      createApp({
+        setup() {
+          // 게시글 목록
+          const posts = ref([
+            {
+              no: 1,
+              title: 'Vue.js 기초 배우기',
+              content:
+                'Vue.js는 사용자 인터페이스를 구축하기 위한 프로그레시브 프레임워크입니다.',
+            },
+            {
+              no: 2,
+              title: '자바스크립트 ES6 문법',
+              content:
+                'ES6는 JavaScript의 최신 문법을 포함하며, let/const, 화살표 함수, 구조 분해 할당 등을 제공합니다.',
+            },
+            {
+              no: 3,
+              title: 'Node.js와 Express',
+              content:
+                'Node.js는 서버 측에서 JavaScript를 실행할 수 있도록 하는 런타임이며, Express는 이를 위한 경량 웹 프레임워크입니다.',
+            },
+            {
+              no: 4,
+              title: 'MongoDB 기본 개념',
+              content:
+                'MongoDB는 NoSQL 데이터베이스로 JSON과 유사한 문서 기반 데이터를 저장하고 관리할 수 있습니다.',
+            },
+            {
+              no: 5,
+              title: '프론트엔드와 백엔드의 차이',
+              content:
+                '프론트엔드는 사용자가 보는 부분을 개발하는 것이고, 백엔드는 서버와 데이터베이스를 관리하는 부분입니다.',
+            },
+            {
+              no: 6,
+              title: '비동기 프로그래밍',
+              content:
+                'JavaScript의 비동기 처리 방식에는 콜백, 프로미스, async/await가 있습니다.',
+            },
+            {
+              no: 7,
+              title: 'Vue Router 사용법',
+              content:
+                'Vue Router를 사용하면 Vue.js 애플리케이션에서 페이지 이동을 쉽게 처리할 수 있습니다.',
+            },
+            {
+              no: 8,
+              title: '컴포넌트 기반 개발',
+              content:
+                'Vue.js에서는 컴포넌트를 사용하여 UI를 작은 단위로 쪼개서 관리할 수 있습니다.',
+            },
+            {
+              no: 9,
+              title: 'CSS와 SCSS 차이점',
+              content:
+                'SCSS는 CSS의 확장된 버전으로 변수, 중첩, 믹스인 등을 지원합니다.',
+            },
+            {
+              no: 10,
+              title: 'Git과 GitHub 사용법',
+              content:
+                'Git은 버전 관리 시스템이며, GitHub는 이를 활용한 원격 저장소 플랫폼입니다.',
+            },
+          ]);
+
+          // 선택한 게시글 초기화
+          const selectedPost = ref(null);
+          const selectedTitle = ref('');
+          const selectedContent = ref('');
+
+          // 게시글 선택 함수 (클릭 시 실행)
+          const selectPost = (post) => {
+            // 클릭 시 선택한 게시글을 설정하는 코드를 작성하세요
+            console.log(post);
+            selectedPost.value = post.no;
+            selectedTitle.value = post.title;
+            selectedContent.value = post.content;
+          };
+
+          // 게시글 닫기 함수
+          const closePost = () => {
+            // 게시글 닫기 기능을 작성하세요
+            selectedPost.value = null;
+          };
+
+          return {
+            posts,
+            selectedPost,
+            selectedTitle,
+            selectedContent,
+            selectPost,
+            closePost,
+          };
+        },
+      }).mount('#app');
+    </script>
+
+    <style>
+      h1 {
+        text-align: center;
+        color: #333;
+      }
+      ul {
+        list-style-type: none;
+        padding: 0;
+      }
+      .post-item {
+        cursor: pointer;
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+      }
+      .post-item:hover {
+        background: #f4f4f4;
+      }
+      .post-content {
+        margin-top: 20px;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background: #fff;
+      }
+      button {
+        margin-top: 10px;
+        padding: 5px 10px;
+        border: none;
+        background: #ff6b6b;
+        color: white;
+        cursor: pointer;
+        border-radius: 3px;
+      }
+      button:hover {
+        background: #ff4f4f;
+      }
+    </style>
+  </body>
+</html>
