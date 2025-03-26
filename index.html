@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>todoList</title>
+
+    <!-- reset -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css"
+      integrity="sha512-NmLkDIU1C/C88wi324HBc+S2kLhi08PN5GDeUVVVC/BVt/9Izdsc9SVeVfA1UZbY3sHUlDSyRXhCzHfr6hmPPw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <!-- cdnjs에서 가져온 font awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+      integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <!-- 앱 제목 -->
+      <header class="hd">
+        <h1>작심</h1>
+      </header>
+
+      <!-- 입력폼 -->
+      <div class="input-container mw">
+        <input type="text" placeholder="할 일을 입력하세요" />
+        <button>추가하기</button>
+      </div>
+
+      <!-- 필터 탭 -->
+      <div class="filter-container mw">
+        <button @click="all_list" :class="{ active: filter === 'all' }">
+          전체
+        </button>
+        <button @click="active_list" :class="{ active: filter === 'active' }">
+          미완료
+        </button>
+        <button
+          @click="complete_list"
+          :class="{ active: filter === 'completed' }"
+        >
+          완료
+        </button>
+      </div>
+
+      <!-- 할 일 목록 -->
+      <ul class="todo-list mw">
+        <li
+          v-for="todo in todos"
+          :key="todo.id"
+          :class="{completed: todo.completed}"
+        >
+          <!-- :class 동적 바인딩. 계산된 값에 따라 동적으로 클래스 적용
+           todo.completed 값이 true일때만 completed 클래스 추가됨 -->
+          <input type="checkbox" @click="complete(todo)" />
+
+          <span>{{todo.text}}</span>
+          <time>2025-03-26</time>
+          <i @click="del(todo)" class="fa fa-trash"></i>
+        </li>
+      </ul>
+
+      <!-- 요약정보 -->
+      <div class="mw todo-summary">
+        <p><span>미완료</span><span>{{ing}}</span></p>
+        <p><span>완료</span><span>{{ed}}</span></p>
+        <button @click="del_all">완료항목 일괄삭제</button>
+      </div>
+    </div>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script type="text/javascript">
+      const { createApp } = Vue;
+
+      let vm = createApp({
+        name: 'App',
+        data() {
+          return {
+            todos: [
+              {
+                id: 1, // 고유 식별자
+                text: '할 일 1', // 할 일 텍스트
+                completed: false, // 완료 상태
+                createdAt: Date, // 생성 시간
+              },
+              {
+                id: 2, // 고유 식별자
+                text: '할 일 2', // 할 일 텍스트
+                completed: false, // 완료 상태
+                createdAt: Date, // 생성 시간
+              },
+              {
+                id: 3, // 고유 식별자
+                text: '할 일 3', // 할 일 텍스트
+                completed: false, // 완료 상태
+                createdAt: Date, // 생성 시간
+              },
+              {
+                id: 4, // 고유 식별자
+                text: '할 일 4', // 할 일 텍스트
+                completed: false, // 완료 상태
+                createdAt: Date, // 생성 시간
+              },
+              {
+                id: 5, // 고유 식별자
+                text: '할 일 5', // 할 일 텍스트
+                completed: false, // 완료 상태
+                createdAt: Date, // 생성 시간
+              },
+              // ...
+            ],
+            newTodo: '', // 새 할 일 입력값
+            filter: 'all', // 필터 상태 (all, active, completed)
+          };
+        },
+
+        computed: {
+          ing() {
+            return this.todos.filter((todo) => !todo.completed).length;
+            // 미완료항목: completed가 false이면 남김
+            // 배열의 요소를 순회하면서 콜백 함수를 사용하여 원하는 것만 남김
+          },
+          ed() {
+            return this.todos.filter((todo) => todo.completed).length;
+            // 완료항목
+          },
+          filteredTodos() {
+            if (this.filter === 'active') {
+              return this.todos.filter((todo) => !todo.completed);
+              // 미완료 항목
+            } else if (this.filter === 'completed') {
+              return this.todos.filter((todo) => todo.completed);
+              // 완료 항목
+            }
+            return this.todos;
+            // 전체 항목
+          },
+        },
+
+        methods: {
+          active_list() {
+            this.filter = 'active';
+          },
+          complete_list() {
+            this.filter = 'completed';
+          },
+          all_list() {
+            this.filter = 'all';
+          },
+          complete(todo) {
+            todo.completed = !todo.completed;
+          },
+          del_all() {
+            // 미완료항목 남기고 완료된 거 지움
+            this.todos = this.todos.filter((todo) => !todo.completed);
+          },
+          del(todo) {
+            this.todos = this.todos.filter((t) => t.id !== todo.id);
+            //t는 todos를 의미. todos를 돌면서 id가 받아온
+            // todo의 id와 같지 않은 것만 남김
+          },
+        },
+      });
+      vm.mount('#app');
+    </script>
+  </body>
+</html>
